@@ -423,6 +423,32 @@ tmux_conf_urlscan_options="--compact --dedupe"
 # move status line to top
 #set -g status-position top
 
+# -- yaoyizhuo 定制（2026-10-22 自主文件迁入，fork 恢复可跟上游更新）------
+
+# prefix: C-a 取代 C-b（2024 "fix" commit）
+set -g prefix C-a
+unbind C-b
+bind C-a send-prefix
+
+# 分屏键位（替代上游的 -/_；b 被上游占为 list-buffers，本地覆盖回分屏）
+bind v split-window -h
+bind b split-window -v
+bind - list-buffers
+
+# 同步输入：<prefix>= 所有 pane 同时打字（2024 "add sync model" commit）
+bind = setw synchronize-panes
+
+# 鼠标模式：强制关闭（上游新版本默认改为 on，与老习惯不符；需要时 <prefix>m 临时开）
+set -g mouse off
+
+# 嵌套 tmux：<prefix>Q 单键把 prefix 透传给内层（替代旧 bind -n C-q send-prefix，
+# 不再全局劫持 C-Q，vim digraph/XON 流控归还给应用；保留 <prefix>q 显示 pane 编号）
+# bind Q send-prefix
+
+# 嵌套 tmux（2026-10-22 恢复 2024 原味）：Ctrl+Q 全局单键透传给内层
+# 代价：每层 tmux 拦截 C-Q，内层 vim 插字面字符(digraph)/XON 流控收不到该键
+bind -n C-q send-prefix
+
 
 # -- tpm -----------------------------------------------------------------------
 
